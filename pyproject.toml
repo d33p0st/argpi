@@ -4,12 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "argpi"
-version = "0.2.0"
+version = "1.0.0"
 description = "Next Level Argument Parser"
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -26,6 +27,6 @@ authors = [
 ]
 
 [project.urls]
-GitHub = "https://github.com/d33pster/argpi"
-Issues = "https://github.com/d33pster/argpi/issues"
-Documentation = "https://d33pster.github.io/argpi/"
+GitHub = "https://github.com/d33p0st/argpi"
+Issues = "https://github.com/d33p0st/argpi/issues"
+"Pull Requests" = "https://github.com/d33p0st/argpi/pulls"

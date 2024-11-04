@@ -2,20 +2,7 @@ from sys import argv as __args__, exit as __exit__
 from enum import Enum
 from functools import wraps
 from typing import Union, List, Dict
-
-# call_once decorator
-def call_once(func):
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        # Use a special attribute to track if the function has been called
-        if hasattr(self, '_called_functions') and func.__name__ in self._called_functions:
-            raise Exception(f"{func.__name__} can only be called once.")
-        if not hasattr(self, '_called_functions'):
-            self._called_functions = {}
-        self._called_functions[func.__name__] = True
-        return func(self, *args, **kwargs)
-    return wrapper
-
+from .utils import call_once
 
 # class for storing argument description
 class ArgumentDescription:
@@ -67,8 +54,8 @@ class Arguments:
         self.found: List[Dict] = []
     
     @call_once
-    def __capture__(self):
-        self.arguments = __args__[1:]
+    def __capture__(self, skip: int = 1):
+        self.arguments = __args__[skip:]
         return self
     
     def __set_arguments__(self, custom_captured_arguments: List[str]):
