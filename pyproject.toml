@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "argpi"
-version = "1.0.0"
+version = "1.1.0"
 description = "Next Level Argument Parser"
 requires-python = ">=3.8"
 classifiers = [
@@ -25,6 +25,9 @@ readme = {file = "README.md", content-type = "text/markdown" }
 authors = [
     {name = "Soumyo Deep Gupta", email = "deep.main.ac@gmail.com" },
 ]
+
+[tool.setuptools.package-data]
+"argpi" = ["*.pyi"]
 
 [project.urls]
 GitHub = "https://github.com/d33p0st/argpi"
