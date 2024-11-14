@@ -87,6 +87,8 @@ class Prep:
 class PathWays:
     def __init__(self, definition: Definition, skip: int = 1) -> None:
         self.arguments = Arguments().__capture__(skip=skip)
+        self.passed_arguments = []
+        self.help_text = definition.generate_help
         
         for dictionary in definition.data:
             if dictionary != {}:
@@ -179,42 +181,48 @@ class PathWays:
         for arg, l_prep in self.prep.items():
             # do all the preps of this argument
             for i in range(len(l_prep)):
-                l_prep[i].function(*l_prep[i].args, **l_prep[i].kwargs)
-                l_prep[i].called = True
+                if self.arguments.__there__(arg):
+                    self.passed_arguments.append(arg)
+                    l_prep[i].function(*l_prep[i].args, **l_prep[i].kwargs)
+                    l_prep[i].called = True
 
         # Do all executions
         for argument in self.registered:
-            self.executed[argument] = Executed(self.registered[argument].function(*self.registered[argument].args, **self.registered[argument].kwargs))
-            self.registered[argument].called = True
+            if self.arguments.__there__(argument):
+                self.passed_arguments.append(argument)
+                self.executed[argument] = Executed(self.registered[argument].function(*self.registered[argument].args, **self.registered[argument].kwargs))
+                self.registered[argument].called = True
         
+        # Check if all preps and executions are called
         if not self.validate:
-            fault = self.find_orchestration_fault
-            raise OrchestrationFault(f"With argument: {fault[0]}, type: {fault[1]}")
+            fault = self.find_orchestration_fault()
+            raise OrchestrationFault(f"Orchestration fault found at {fault[0]} with type {fault[1]}")
+    
+    @property
+    def validate(self) -> bool:
+        for argument, l_prep in self.prep.items():
+            for prep in l_prep:
+                if argument in self.passed_arguments and prep.called is False:
+                    return False
+        
+        for argument, obj in self.registered.items():
+            if argument in self.passed_arguments and obj.called is False:
+                return False
+        
+        return True
     
     @property
     def find_orchestration_fault(self) -> Tuple[str, str]:
         for argument, l_prep in self.prep.items():
             for prep in l_prep:
-                if prep.called is False:
+                if argument in self.passed_arguments and prep.called is False:
                     return (argument, 'PREP')
         
         for argument, obj in self.registered.items():
-            if obj.called is False:
+            if argument in self.passed_arguments and obj.called is False:
                 return (argument, 'EXEC')
         
         return ('UNKNOWN', 'UNKNOWN')
-    
-    @property
-    def validate(self) -> bool:
-        # Check all preps
-        for _, l_prep in self.prep.items():
-            for prep in l_prep:
-                if prep.called is False:
-                    return False
-        
-        # check executions
-        # If both lengths are same, all are executed.
-        return len(self.registered) == len(self.executed)
     
     def if_exec(self, argument: str) -> bool:
         return argument in self.executed
@@ -227,3 +235,9 @@ class PathWays:
             return default
         else:
             return default
+    
+    def __str__(self) -> str:
+        return self.help_text
+    
+    def __repr__(self) -> str:
+        return self.help_text
