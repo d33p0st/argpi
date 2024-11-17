@@ -2,6 +2,8 @@
 
 `argpi` revolutionizes argument parsing in python by introducing a registration based system. This allows users to implement argument parsing in one line of code. Any type of argument can be defined other than the conventional `--` and `-` prefix type arguments. For example, arguments can be of the type `argument1` or `_argument1` or any keyword you set. There is not restrictions on the short form of the argument. You can have `--argument1` as the long form while `_arg1` as the shorter form. This brings a lot of flexibility and customization to the users.
 
+> ### For full documentation, visit [argpi.hashnode.space](https://argpi.hashnode.space)
+
 ## Table of Contents
 
 - [Features](#features)

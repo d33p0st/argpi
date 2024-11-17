@@ -5,6 +5,7 @@ from .pathways import (
     OrchestrationFault,
     DefinitionError,
 )
+from ._dummy import _driverclasserror
 
 __all__ = [
     "OnceCallablityError",
@@ -12,4 +13,5 @@ __all__ = [
     "FetchValueTypeError",
     "OrchestrationFault",
     "DefinitionError",
+    "_driverclasserror",
 ]
