@@ -125,7 +125,7 @@ class PathWays:
         ...
     
     @overload
-    def register(self, argument: str, function: Callable, type: Literal['PREP', 'EXEC'], what_value_expected: Union[Literal['Single', 'Till Next', 'Till Last'], None] = None) -> None:
+    def register(self, argument: str, function: Callable, type: Literal['PREP', 'EXEC'], what_value_expected: Union[Literal['Single', 'Till Next', 'Till Last'], None] = None, ignore_if_not_present: bool = False) -> None:
         """`register` a function for a specific argument, by getting some argument value from the argument pool
         
         `Working`: If the `argument` is in the parsed argument pool, the `function` will be called with the values,

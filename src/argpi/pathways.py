@@ -106,9 +106,9 @@ class PathWays:
     @overload
     def register(self, argument: str, function: Callable, type: Literal['PREP', 'EXEC'], arguments: Union[Tuple[Any], None] = None) -> None: ...
     @overload
-    def register(self, argument: str, function: Callable, type: Literal['PREP', 'EXEC'], what_value_expected: Literal['Single', 'Till Next', 'Till Last'] = 'Single') -> None: ...
+    def register(self, argument: str, function: Callable, type: Literal['PREP', 'EXEC'], what_value_expected: Literal['Single', 'Till Next', 'Till Last'] = 'Single', ignore_if_not_present: bool = False) -> None: ...
     
-    def register(self, argument: str, function: Callable, type: Literal['PREP', 'EXEC'], arguments: Union[Tuple[Any], None] = None, what_value_expected: Union[Literal['Single', 'Till Next', 'Till Last'], None] = None) -> Any:
+    def register(self, argument: str, function: Callable, type: Literal['PREP', 'EXEC'], arguments: Union[Tuple[Any], None] = None, what_value_expected: Union[Literal['Single', 'Till Next', 'Till Last'], None] = None, ignore_if_not_present: bool = False) -> None:
         # Check if it is number 2 overload.
         if what_value_expected is not None:
             # It is numbe 2 overload
@@ -116,7 +116,10 @@ class PathWays:
             # This overload handles auto placement of arguments in the function
 
             if not self.arguments.__argument_has_value__(argument):
-                raise ArgumentDoesNotHaveAValue(f"\'{argument}\' expects atleast one value.")
+                if ignore_if_not_present:
+                    return
+                else:
+                    raise ArgumentDoesNotHaveAValue(f"\'{argument}\' expects atleast one value. Or set a default value to avoid this error.")
             
             # If what_value_expected is Single
             if what_value_expected == 'Single':
@@ -135,27 +138,27 @@ class PathWays:
             elif what_value_expected == 'Till Last':
                 # If PREP, store it as prep
                 if type == 'PREP':
-                    prep = Prep(False, function, self.arguments.__fetch__(argument, FetchType.TILL_LAST))
+                    prep = Prep(False, function, *self.arguments.__fetch__(argument, FetchType.TILL_LAST))
                     if argument not in self.prep:
                         self.prep[argument] = [prep]
                     else:
                         self.prep[argument].append(prep)
                 else:
                     # Exec type Register It
-                    exec_ = Registered(False, function, self.arguments.__fetch__(argument, FetchType.TILL_LAST))
+                    exec_ = Registered(False, function, *self.arguments.__fetch__(argument, FetchType.TILL_LAST))
                     self.registered[argument] = exec_
 
             elif what_value_expected == 'Till Next':
                 # If PREP, store it as prep
                 if type == 'PREP':
-                    prep = Prep(False, function, self.arguments.__fetch__(argument, FetchType.TILL_NEXT))
+                    prep = Prep(False, function, *self.arguments.__fetch__(argument, FetchType.TILL_NEXT))
                     if argument not in self.prep:
                         self.prep[argument] = [prep]
                     else:
                         self.prep[argument].append(prep)
                 else:
                     # Exec type Register It
-                    exec_ = Registered(False, function, self.arguments.__fetch__(argument, FetchType.TILL_NEXT))
+                    exec_ = Registered(False, function, *self.arguments.__fetch__(argument, FetchType.TILL_NEXT))
                     self.registered[argument] = exec_
 
             else:
